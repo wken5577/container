@@ -1,65 +1,103 @@
-#ifndef vector
-#define vector
+#ifndef VECTOR
+#define VECTOR
+
+#include <memory>
+#include <iterator>
 
 namespace ft
 {
     template <class T, class Allocator = std::allocator<T> >
     class vector
     {
+
+    public:
+        typedef T                                       value_type;
+        typedef Allocator                               allocator_type;
+        typedef std::size_t                             size_type;
+        typedef std::ptrdiff_t                          difference_type;
+        typedef value_type&                             reference;
+        typedef const value_type&                       const_reference;
+        typedef allocator_type::pointer                 pointer;
+        typedef allocator_type::const_pointer           const_pointer;
+        typedef value_type::iterator                    iterator;
+        typedef const value_type::iterator              const_iterator;
+        typedef std::reverse_iterator<iterator>         reverse_iterator;
+        typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
+    
     private:
-        T                                       value_type;
-        Allocator                               allocator_type;
-        std::sizet                              size_type;
-        std::ptrdiff_t                          difference_type;
-        value_type&                             reference;
-        const value_type&                       const_reference;
-        Allocator::pointer                      pointer;
-        Allocator::const_pointer                const_pointer;
-        value_type::iterator                    iterator;
-        const value_type::iterator              const_iterator;
-        std::reverse_iterator<iterator>         reverse_iterator;
-        std::reverse_iterator<const_iterator>   const_reverse_iterator;
+        pointer         _array;
+        allocator_type  _alloc;
+        size_type       _capacity;
+        size_type       _c_idx;
 
+    private:
+        void _fill_array(size_type count, const_reference value)
+        {
+            while (c_idx < count)
+            {
+                _array[_c_idx] = value;
+                c_idx++;
+            }
+        }
+
+        template <class InputIt = std::iterator<T> >
+        void _fill_array_iter(InputIt first, InputIt last)
+        {
+            while (first != last)
+            {
+                _array[c_idx++] = *first;
+                first++;
+            }
+        }
+
+    public:
+        vector()
+        :_capacity(0), _c_idx(0)
+        {
+            _alloc = Allocator();
+            _array = NULL;
+        };
         
-        public:
-            vector()
-            :size_type(0), difference_type(0), reference(0), const_reference(0),\
-             pointer(0), const_pointer(0), iterator(0), const_iterator(0), reverse_iterator(0), const_reverse_iterator(0)
-            {
-                allocator_type = Allocator<value_type>();
-            }
-            
-            explicit vector(const Allocator& alloc)
-            :size_type(0), difference_type(0), reference(0), const_reference(0),\
-             pointer(0), const_pointer(0), iterator(0), const_iterator(0), reverse_iterator(0), const_reverse_iterator(0)
-            {
-                allocator_type = alloc;
-            }
+        explicit vector(const Allocator& allocator)
+        :vector()
+        {
+            _alloc = allocator;
+            _array = NULL;
+        }
 
-            vector(size_type count, const T& value, const Allocator& alloc = Allocator())
+        vector(size_type count, const_reference value, const allocator_type& allocator = Allocator())
+        :vector()
+        {
+            _alloc = allocator;
+            if (count > 0)
             {
-                allocator_type = alloc;
-                size_type = count;
-                difference_type = count;
-                reference = value;
-                const_reference = value;
-                pointer = allocator_type.allocate(count);
-                const_pointer = pointer;
-                iterator = pointer;
-                const_iterator = pointer;
-                reverse_iterator = std::reverse_iterator<iterator>(pointer);
-                const_reverse_iterator = std::reverse_iterator<const_iterator>(pointer);
+                _array = _alloc.allocate(count);
+                _fill_array(count, value);
             }
-       
-            template <class InputIt>
-            vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
-            vector(const vector& other);
-            vector(const vector& other, const Allocator& alloc);
-            vector(vector&& other);
-            vector(vector&& other, const Allocator& alloc);
-            vector(std::initializer_list<T> init, const Allocator& alloc = Allocator());
+        }
+    
+        template <class InputIt = std::iterator<T> >
+        vector(InputIt first, InputIt last, const allocator_type& allocator = Allocator())
+        :vector()
+        {
+            _alloc = allocator;
+            size_type count = 0;
+            InputIt tmp = first;
+            while (tmp != last)
+            {
+                tmp++
+                count++;
+            }
+            _array = _alloc.allocate(count);
+            _fill_array_iter(first, last);
+        }
 
-            ~vector();
+        vector(const vector& other);
+        vector(const vector& other, const allocator_type& alloc);
+        vector(vector&& other);
+        vector(vector&& other, const allocator_type& alloc);
+        vector(std::initializer_list<T> init, const allocator_type& alloc = Allocator());
+
     };
 }
 
