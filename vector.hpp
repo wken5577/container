@@ -2,7 +2,7 @@
 #define VECTOR
 
 #include <memory>
-#include <iterator>
+#include "reverse_iterator.hpp"
 
 namespace ft
 {
@@ -21,8 +21,8 @@ namespace ft
         typedef allocator_type::const_pointer           const_pointer;
         typedef value_type::iterator                    iterator;
         typedef const value_type::iterator              const_iterator;
-        typedef std::reverse_iterator<iterator>         reverse_iterator;
-        typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
+        typedef ft::reverse_iterator<iterator>          reverse_iterator;
+        typedef ft::reverse_iterator<const_iterator>    const_reverse_iterator;
     
     private:
         pointer         _array;
@@ -92,11 +92,56 @@ namespace ft
             _fill_array_iter(first, last);
         }
 
-        vector(const vector& other);
-        vector(const vector& other, const allocator_type& alloc);
-        vector(vector&& other);
-        vector(vector&& other, const allocator_type& alloc);
-        vector(std::initializer_list<T> init, const allocator_type& alloc = Allocator());
+        vector(const vector& other)
+        {
+            _alloc = other._alloc;
+            _capacity = other._capacity;
+            _c_idx = 0;
+            _array = _alloc.allocate(_capacity);
+            _fill_array_iter(other.begin(), other.end());            
+        }
+
+        vector(const vector& other, const allocator_type& alloc)
+        {
+            _alloc = alloc;
+            _capacity = other._capacity;
+            _c_idx = 0;
+            _array = _alloc.allocate(_capacity);
+            _fill_array_iter(other.begin(), other.end());            
+        }
+
+        vector(vector&& other)
+        {
+            _alloc = other._alloc;
+            _capacity = other._capacity;
+            _c_idx = other._c_idx;
+            _array = other._array;
+            other._array = NULL;
+        }
+
+        vector(vector&& other, const allocator_type& alloc)
+        {
+            _alloc = alloc;
+            _capacity = other._capacity;
+            _c_idx = other._c_idx;
+            _array = other._array;
+            other._array = NULL;
+        }
+
+        vector(std::initializer_list<T> init, const allocator_type& alloc = Allocator())
+        {
+            _alloc = alloc;
+            _capacity = init.size();
+            _c_idx = 0;
+            _array = _alloc.allocate(_capacity);
+            _fill_array_iter(init.begin(), init.end());
+        }
+
+        ~vector()
+        {
+            _alloc.destroy(_array);
+            _alloc.deallocate(_array, _capacity);
+        }
 
     };
 }
