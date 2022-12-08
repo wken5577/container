@@ -24,7 +24,7 @@ namespace ft
         :current()
         {}
 
-        explicit reverse_iterator( iterator_type x )
+        reverse_iterator( iterator_type x )
         :current(x)
         {}
 
