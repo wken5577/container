@@ -6,6 +6,7 @@
 #include <limits>
 #include <iterator>
 #include <algorithm>
+#include <utility>
 #include "iterator_traits.hpp"
 #include "reverse_iterator.hpp"
 
@@ -154,7 +155,7 @@ namespace ft
     
         template <class InputIt>
         vector(InputIt first, InputIt last, const allocator_type& allocator = Allocator())
-        :Vecvectortor()
+        :vector()
         {
             _alloc = allocator;
             assign(first, last);
@@ -615,6 +616,160 @@ namespace ft
     void swap( vector<T,Alloc>& lhs, vector<T,Alloc>& rhs )
     {
         lhs.swap(rhs);
+    }
+
+    template<bool B, class T = void>
+    struct enable_if {};
+    
+    template<class T>
+    struct enable_if<true, T> { typedef T type; };
+
+    template< class T >
+    struct is_integral
+    {
+    public:
+        static const bool value = std::numeric_limits<T>::is_integer;
+    };
+
+    template< class InputIt1, class InputIt2 >
+    bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 )
+    {
+        for (; first1 != last1; ++first1, ++first2) {
+        if (!(*first1 == *first2)) {
+            return false;
+            }
+        }
+        return true;
+    }
+
+    template< class InputIt1, class InputIt2, class BinaryPredicate >
+    bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p )
+    {
+        for (; first1 != last1; ++first1, ++first2) {
+            if (!p(*first1, *first2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template< class InputIt1, class InputIt2 >
+    bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2 )
+    {
+        while (first1 != last1 && first2 != last2)
+        {
+            if (*first1 != *first2)
+                return false;
+            first1++;
+            first2++;
+        }
+        if (first1 == last1 && first2 == last2)
+            return true;
+        else
+            return false;
+    }
+
+    template< class InputIt1, class InputIt2, class BinaryPredicate >
+    bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, BinaryPredicate p )
+    {
+        while (first1 != last1 && first2 != last2)
+        {
+            if (!p(*first1, *first2))
+                return false;
+            first1++;
+            first2++;
+        }
+        if (first1 == last1 && first2 == last2)
+            return true;
+        else
+            return false;
+    }
+
+    template< class T1, class T2 > 
+    struct pair
+    {
+    public:
+        typedef T1 first_type;
+        typedef T2 second_type;
+
+    private:
+        T1  first;
+        T2  second;
+
+    public:
+        pair() {}
+
+        pair( const T1& x, const T2& y )
+        :first(x), second(y)
+        {}
+
+        template< class U1, class U2 >
+        pair( const pair<U1, U2>& p )
+        {
+            first = p.first;
+            second = p.second;
+        }
+
+        pair& operator=( const pair& other )
+        {
+            first = other.first;
+            second = other.second;
+            return *this;
+        }
+    };
+
+    template< class T1, class T2 >
+    pair<T1, T2> make_pair( T1 t, T2 u )
+    {
+        return pair<T1, T2>(t, u);
+    }
+
+    template< class T1, class T2 >
+    bool operator==( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
+    {
+        return (lhs.first == rhs.second && lhs.second == rhs.second);
+    }
+
+    template< class T1, class T2 >
+    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
+    {
+        return (lhs.first != rhs.second && lhs.second != rhs.second);
+    }
+
+    template< class T1, class T2 >
+    bool operator<( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
+    {
+        if (lhs.first != rhs.first)
+            return (lhs.first < rhs.first);
+        else
+            return (lhs.second < rhs.second);
+    }
+
+    template< class T1, class T2 >
+    bool operator<=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
+    {
+        if (lhs.first != rhs.first)
+            return (lhs.first <= rhs.first);
+        else
+            return (lhs.second <= rhs.second);
+    }
+
+    template< class T1, class T2 >
+    bool operator>( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
+    {
+        if (lhs.first != rhs.first)
+            return (lhs.first > rhs.first);
+        else
+            return (lhs.second > rhs.second);
+    }
+
+    template< class T1, class T2 >
+    bool operator>=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
+    {
+        if (lhs.first != rhs.first)
+            return (lhs.first >= rhs.first);
+        else
+            return (lhs.second >= rhs.second);
     }
 }
 
