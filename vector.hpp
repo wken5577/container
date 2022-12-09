@@ -189,6 +189,7 @@ namespace ft
             this->_capacity = other._capacity;
             this->_array = _alloc.allocate(this->_capacity);
             _fill_array_iter(other.begin(), other.end());
+            return *this;
         }
         
         void assign( size_type count, const T& value )
