@@ -514,7 +514,7 @@ namespace ft
         {
             if (lhs._c_idx != rhs._c_idx)
                 return false;
-            for(int i = 0; i < lhs.c_idx; i++)
+            for(int i = 0; i < lhs._c_idx; i++)
             {
                 if (lhs._array[i] != rhs._array[i])
                     return false;
@@ -543,10 +543,7 @@ namespace ft
                 idx_lhs++;
                 idx_rhs++;
             }
-            if (idx_lhs >= idx_rhs)
-                return false;
-            else
-                return true;
+            return lhs_size < rhs_size;
         }
 
         template< class S, class Alloc >
@@ -564,10 +561,7 @@ namespace ft
                 idx_lhs++;
                 idx_rhs++;
             }
-            if (idx_lhs > idx_rhs)
-                return false;
-            else
-                return true;
+            return lhs_size <= rhs_size;
         }
 
         template< class S, class Alloc >
@@ -585,10 +579,7 @@ namespace ft
                 idx_lhs++;
                 idx_rhs++;
             }
-            if (idx_lhs > idx_rhs)
-                return true;
-            else
-                return false;
+            return lhs_size > rhs_size;
         }
 
         template< class S, class Alloc >
@@ -606,10 +597,7 @@ namespace ft
                 idx_lhs++;
                 idx_rhs++;
             }
-            if (idx_lhs >= idx_rhs)
-                return true;
-            else
-                return false;
+            return lhs_size >= rhs_size;
         }
     };
 

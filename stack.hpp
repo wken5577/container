@@ -11,24 +11,18 @@ namespace ft
 	{
 
 	public:
-		typedef Container					container_type;
-		typedef Container::value_type		value_type;
-		typedef Container::size_type		size_type;
-		typedef Container::reference		reference;
-		typedef Container::const_reference	const_reference;
+		typedef Container							container_type;
+		typedef typename Container::value_type		value_type;
+		typedef typename Container::size_type		size_type;
+		typedef typename Container::reference		reference;
+		typedef typename Container::const_reference	const_reference;
 	
 	protected:
 		Container 	c;
-	private:
-		size_type	_c_idx;
 
 	public:
 	stack()
-	: c(Container()), _c_idx(0) { }
-
-	explicit stack( const Container& cont = Container() )
-	:_c_idx(0)
-	{}
+	: c(Container()) {}
 
 	stack( const stack& other )
 	{
@@ -39,13 +33,11 @@ namespace ft
 	stack( InputIt first, InputIt last )
 	{
 		c = Container(first, last);
-		_c_idx = std::distance(first, last);
 	}
 
 
 	template< class Alloc > 
 	explicit stack( const Alloc& alloc )
-	:_c_idx(0)
 	{
 		c = Container(alloc);
 	}
@@ -54,14 +46,12 @@ namespace ft
 	stack( const Container& cont, const Alloc& alloc )
 	{
 		c = Container(cont, alloc);
-		_c_idx = c.size();
 	}
 
 	template< class Alloc > 
 	stack( const stack& other, const Alloc& alloc )
 	{
 		c = Container(other.c, alloc);
-		_c_idx = c.size();
 	}
 
 	~stack()
@@ -71,12 +61,79 @@ namespace ft
 	stack& operator=( const stack& other )
 	{
 		c = other.c;
-		_c_idx = other._c_idx;
 		return *this;
 	}
 
+	reference top()
+	{
+		return c.back();
+	}
+
+	const_reference top() const
+	{
+		return c.back();
+	}
+
+	bool empty() const
+	{
+		return c.empty();
+	}
+
+	size_type size() const
+	{
+		return c.size();
+	}
+
+	void push( const value_type& value )
+	{
+		c.push_back(value);
+	}
+
+	void pop()
+	{
+		c.pop_back();
+	}
+
+	template< class S, class Cont >
+	friend bool operator==( const stack<S, Cont>& lhs, const stack<S, Cont>rhs )
+	{
+		return lhs.c == rhs.c;
+	}
+
+	template< class S, class Cont >
+	friend bool operator!=( const stack<S, Cont>& lhs, const stack<S, Cont>rhs )
+	{
+		return lhs.c != rhs.c;
+	}
+
+	template< class S, class Cont >
+	friend bool operator<( const stack<S, Cont>& lhs, const stack<S, Cont>rhs )
+	{
+		return lhs.c < rhs.c;
+	}
+
+	template< class S, class Cont >
+	friend bool operator<=( const stack<S, Cont>& lhs, const stack<S, Cont>rhs )
+	{
+		return lhs.c <= rhs.c;
+	}
+
+	template< class S, class Cont >
+	friend bool operator>( const stack<S, Cont>& lhs, const stack<S, Cont>rhs )
+	{
+		return lhs.c > rhs.c;
+	}
+
+	template< class S, class Cont >
+	friend bool operator>=( const stack<S, Cont>& lhs, const stack<S, Cont>rhs )
+	{
+		return lhs.c >= rhs.c;
+	}
 
 	};
+
+	
+
 }
 
 #endif
