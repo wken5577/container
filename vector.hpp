@@ -9,55 +9,10 @@
 #include <utility>
 #include "iterator_traits.hpp"
 #include "reverse_iterator.hpp"
+#include "random_access_iterator.hpp"
 
 namespace ft
 {
-    template<typename T>
-    class random_access_iterator
-    {
-    private:
-        T* _iterator;
-    
-    public:
-        typedef T                              value_type;
-        typedef value_type&                    reference;
-        typedef value_type*                    pointer;
-        typedef ft::random_access_iterator_tag iterator_category;
-        typedef std::ptrdiff_t                 difference_type;
-
-
-        random_access_iterator(T *iter = nullptr)
-        :_iterator(iter)
-        {}
-
-        bool operator==(const random_access_iterator& other) const { return _iterator == other._iterator; }
-        bool operator!=(const random_access_iterator& other) const { return _iterator != other._iterator; }
-        pointer operator->() const { return _iterator; }
-        random_access_iterator& operator++()  { ++_iterator; return *this; }
-        random_access_iterator operator++(int)  { 
-            random_access_iterator tmp(*this);
-             ++(*this); 
-             return tmp; 
-        }
-        random_access_iterator& operator--()  { --_iterator; return *this; }
-        random_access_iterator operator--(int)  {
-            random_access_iterator tmp(*this);
-            --(*this); 
-            return tmp; 
-        }
-        reference operator*() const {T * __tmp = _iterator; return *__tmp;}
-        random_access_iterator& operator+=(const difference_type other)  { _iterator += other; return *this; }
-        random_access_iterator& operator-=(const difference_type other)  { _iterator -= other; return *this; }
-        random_access_iterator operator+(const difference_type other) const  { return random_access_iterator(_iterator + other); }
-        random_access_iterator operator-(const difference_type other) const  { return random_access_iterator(_iterator - other); }
-        random_access_iterator operator+(const random_access_iterator& other) const  { return random_access_iterator(*this + other.m_iterator); }
-        difference_type operator-(const random_access_iterator& other) const  { return std::distance(_iterator, other.m_iterator); }
-        reference operator[](std::size_t index) const { return _iterator[index]; }
-        bool operator<(const random_access_iterator& other) const { return _iterator < other.m_iterator; }
-        bool operator>(const random_access_iterator& other) const { return _iterator > other.m_iterator; }
-        bool operator<=(const random_access_iterator& other) const { return _iterator <= other.m_iterator; }
-        bool operator>=(const random_access_iterator& other) const { return _iterator >= other.m_iterator; }
-    };
 
     template <class T, class Allocator = std::allocator<T> >
     class vector
@@ -674,92 +629,6 @@ namespace ft
             return false;
     }
 
-    template< class T1, class T2 > 
-    struct pair
-    {
-    public:
-        typedef T1 first_type;
-        typedef T2 second_type;
-
-    private:
-        T1  first;
-        T2  second;
-
-    public:
-        pair() {}
-
-        pair( const T1& x, const T2& y )
-        :first(x), second(y)
-        {}
-
-        template< class U1, class U2 >
-        pair( const pair<U1, U2>& p )
-        {
-            first = p.first;
-            second = p.second;
-        }
-
-        pair& operator=( const pair& other )
-        {
-            first = other.first;
-            second = other.second;
-            return *this;
-        }
-    };
-
-    template< class T1, class T2 >
-    pair<T1, T2> make_pair( T1 t, T2 u )
-    {
-        return pair<T1, T2>(t, u);
-    }
-
-    template< class T1, class T2 >
-    bool operator==( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
-    {
-        return (lhs.first == rhs.second && lhs.second == rhs.second);
-    }
-
-    template< class T1, class T2 >
-    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
-    {
-        return (lhs.first != rhs.second && lhs.second != rhs.second);
-    }
-
-    template< class T1, class T2 >
-    bool operator<( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
-    {
-        if (lhs.first != rhs.first)
-            return (lhs.first < rhs.first);
-        else
-            return (lhs.second < rhs.second);
-    }
-
-    template< class T1, class T2 >
-    bool operator<=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
-    {
-        if (lhs.first != rhs.first)
-            return (lhs.first <= rhs.first);
-        else
-            return (lhs.second <= rhs.second);
-    }
-
-    template< class T1, class T2 >
-    bool operator>( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
-    {
-        if (lhs.first != rhs.first)
-            return (lhs.first > rhs.first);
-        else
-            return (lhs.second > rhs.second);
-    }
-
-    template< class T1, class T2 >
-    bool operator>=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs )
-    {
-        if (lhs.first != rhs.first)
-            return (lhs.first >= rhs.first);
-        else
-            return (lhs.second >= rhs.second);
-    }
 }
 
 #endif
