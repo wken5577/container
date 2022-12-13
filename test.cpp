@@ -3,43 +3,36 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include "red_black_tree.hpp"
+#include "pair.hpp"
 
 int main()
 {	
-	ft::stack<int> st;
-	st.push(1);
-	st.push(2);
+	RBTree<int, std::string> tree;
+	tree.insertNode(ft::make_pair(35, "35"));
+	tree.insertNode(ft::make_pair(20, "20"));
+	tree.insertNode(ft::make_pair(10, "10"));
+	tree.insertNode(ft::make_pair(30, "30"));
+	tree.insertNode(ft::make_pair(50, "40"));
+	tree.insertNode(ft::make_pair(40, "40"));
+	tree.insertNode(ft::make_pair(80, "60"));
+	tree.insertNode(ft::make_pair(5, "70"));
+	tree.insertNode(ft::make_pair(15, "80"));
+	tree.insertNode(ft::make_pair(25, "90"));
+	tree.insertNode(ft::make_pair(33, "100"));
+	tree.insertNode(ft::make_pair(37, "110"));
+	tree.insertNode(ft::make_pair(45, "120"));
+	tree.insertNode(ft::make_pair(2, "130"));
+	tree.insertNode(ft::make_pair(27, "22"));
 
-	ft::stack<int> st2;
-	st2.push(1);
-	st2.push(2);
-	st2.push(3);
-
-
-	std::stack<int> r_st;
-	r_st.push(1);
-	r_st.push(2);
-
-	std::stack<int> r_st2;
-	r_st2.push(1);
-	r_st2.push(2);
-	r_st2.push(3);
-
-	bool result = st == st2;
-	bool result2 = r_st == r_st2;
-
-	std::cout << result << std::endl;
-	std::cout << result2 << std::endl;
-
-	std::cout << st.size() << "\n";
-	std::cout << r_st.size() << "\n";
-	std::cout << st2.size() << "\n";
-	std::cout << r_st2.size() << "\n";
-	
-	std::cout << st.top() << "\n";
-	std::cout << r_st.top() << "\n";
-	std::cout << st2.top() << "\n";
-	std::cout << r_st2.top() << "\n";
-
+	tree.deleteNode(15);
+	tree.deleteNode(33);
+	tree.deleteNode(37);
+	tree.deleteNode(35);
+	tree.deleteNode(40);
+	tree.deleteNode(50);
+	tree.deleteNode(80);
+	tree.deleteNode(27);
+	tree.printRBTree(tree.head);
 	return 0;
 }
