@@ -17,23 +17,22 @@ template<typename S>
 class iteratorMap
 {
 private:
-    S *_iterator;
+    S _iterator;
 
 public:
     typedef S                               value_type;
     typedef value_type&                     reference;
-    typedef value_type*                     pointer;
+    typedef value_type                      pointer;
     typedef ft::bidirectional_iterator_tag  iterator_category;
     typedef std::ptrdiff_t                  difference_type;
-    typedef ft::pair<Key, T>                return_data;
+    typedef ft::pair<Key, T>                *return_pointer;
+    typedef ft::pair<Key, T>                &return_reference;
 
-    iteratorMap(S *iter = nullptr)
+    iteratorMap(S iter = nullptr)
     :_iterator(iter)
     {}
 
-    bool operator==(const iteratorMap& other) const { return _iterator == other._iterator; }
-    bool operator!=(const iteratorMap& other) const { return _iterator != other._iterator; }
-    pointer operator->() const { return _iterator->data; }
+    return_pointer operator->() const { return _iterator->data; }
     iteratorMap& operator++()  { _iterator = next(_iterator); return *this; }
     iteratorMap operator++(int)  {
         iteratorMap tmp(*this);
@@ -46,15 +45,25 @@ public:
         --(*this);
         return tmp;
     }
-    return_data operator*() const {pointer  __tmp = _iterator; return *(__tmp->data);}
+    return_reference operator*() const {pointer  __tmp = _iterator; return *(__tmp->data);}
 
-    bool operator<(const iteratorMap& other) const { return _iterator->data < other.m_iterator->data; }
-    bool operator>(const iteratorMap& other) const { return _iterator->data > other.m_iterator->data; }
-    bool operator<=(const iteratorMap& other) const { return _iterator->data <= other.m_iterator->data; }
-    bool operator>=(const iteratorMap& other) const { return _iterator->data >= other.m_iterator->data; }
+    bool operator==(const iteratorMap& other) const { 
+        if (!_iterator || !other._iterator)
+            return _iterator == other._iterator;
+        return _iterator->data == other._iterator->data; 
+    }
+    bool operator!=(const iteratorMap& other) const { 
+        if (!_iterator || !other._iterator)
+            return _iterator != other._iterator;
+        return _iterator->data != other._iterator->data; 
+    }
+    bool operator<(const iteratorMap& other) const { return _iterator->data < other._iterator->data; }
+    bool operator>(const iteratorMap& other) const { return _iterator->data > other._iterator->data; }
+    bool operator<=(const iteratorMap& other) const { return _iterator->data <= other._iterator->data; }
+    bool operator>=(const iteratorMap& other) const { return _iterator->data >= other._iterator->data; }
 
 private:
-    S* leftMost(S* head)
+    S leftMost(S head)
     {
         if (head == nullptr)
             return nullptr;
@@ -63,7 +72,7 @@ private:
         return head;
     }
 
-    S* rightMost(S* head)
+    S rightMost(S head)
     {
         if (head == nullptr)
             return nullptr;
@@ -72,14 +81,14 @@ private:
         return head;
     }
 
-    S* next(S* node)
+    S next(S node)
     {
         if (!node)
             return nullptr;
         if (node->right)
             return leftMost(node->right);
         
-        S* parent = node->parent;
+        S parent = node->parent;
         if (parent == nullptr)
             return nullptr;
         
@@ -95,14 +104,14 @@ private:
         return parent;
     }
 
-    S* prev(S* node)
+    S prev(S node)
     {
         if (!node)
             return nullptr;
         if (node->left)
             return rightMost(node->left);
 
-        S* parent = node->parent;
+        S parent = node->parent;
         if (parent == nullptr)
             return nullptr;
 
@@ -129,6 +138,8 @@ template< class Iter >
         typedef typename ft::iterator_traits<Iter>::difference_type     difference_type;
         typedef typename ft::iterator_traits<Iter>::pointer             pointer;
         typedef typename ft::iterator_traits<Iter>::reference           reference;
+        typedef ft::pair<Key, T>                                        *return_pointer;
+        typedef ft::pair<Key, T>                                        &return_reference;
     
     protected:
         iterator_type current;
@@ -155,8 +166,8 @@ template< class Iter >
         }
 
         iterator_type base() const { return this->current; }
-        reference operator*() const {iterator_type __tmp = current; return *__tmp;}
-        pointer operator->() const {return &(operator*());}
+        return_reference operator*() const {iterator_type __tmp = current; return *__tmp;}
+        return_pointer operator->() const {return &(operator*());}
         reverse_iterator_map& operator++() {--current; return *this;}
         reverse_iterator_map operator++(int) {reverse_iterator_map __tmp = *this; --current; return __tmp;}
         reverse_iterator_map& operator--() {++current; return *this;}
@@ -170,20 +181,18 @@ template< class Iter >
                     const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() != rhs.base();}
         template< class Iterator1, class Iterator2 >
         friend bool operator<( const reverse_iterator_map<Iterator1>& lhs,
-                const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() > rhs.base();}
-        template< class Iterator1, class Iterator2 >
-        friend bool operator<=( const reverse_iterator_map<Iterator1>& lhs,
-                    const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() >= rhs.base();}
-        template< class Iterator1, class Iterator2 >
-        friend bool operator>( const reverse_iterator_map<Iterator1>& lhs,
                 const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() < rhs.base();}
         template< class Iterator1, class Iterator2 >
-        friend bool operator>=( const reverse_iterator_map<Iterator1>& lhs,
+        friend bool operator<=( const reverse_iterator_map<Iterator1>& lhs,
                     const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() <= rhs.base();}
+        template< class Iterator1, class Iterator2 >
+        friend bool operator>( const reverse_iterator_map<Iterator1>& lhs,
+                const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() > rhs.base();}
+        template< class Iterator1, class Iterator2 >
+        friend bool operator>=( const reverse_iterator_map<Iterator1>& lhs,
+                    const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() >= rhs.base();}
     
     };
-
-                
 
 
 public:
@@ -208,12 +217,10 @@ public:
 private:
 allocator_type      _alloc;
 Compare             _comp;
-size_type           _size;
 ft::RBTree<Key,T>   _tree;
 
 public:
 map()
-:_size(0)
 {
     _tree = ft::RBTree<Key,T>(_comp);
 }
@@ -230,7 +237,7 @@ map( InputIterator first, InputIterator last, const Compare& comp = Compare(), c
     _alloc = alloc;
     _comp = comp;
     _tree = ft::RBTree<Key,T>(_comp);
-    // insert(first, last);
+    insert(first, last);
 }
 
 map( const map& x )
@@ -247,9 +254,8 @@ map& operator=( const map& other )
 {
     this->_alloc = other._alloc;
     this->_comp = other._comp;
-    this->_size = other._size;
     this->_tree.deleteAllData();
-//  insert(other.begin(), other.end());
+    insert(other.begin(), other.end());
     return *this;
 }
 
@@ -284,57 +290,88 @@ T& operator[]( const Key& key )
         pair.first = key;
         _tree.insertNode(pair);
         return _tree.getData(key)->second;
-    }    
+    }
 }
 
 iterator begin()
 {
-    return iterator(_tree.getFirst()->parent);
+    node first = _tree.getFirst();
+    if (first == nullptr)
+        return end();
+    node n = first->parent;
+    return iterator(n);
 }
 
 const_iterator begin() const
 {
-    return const_iterator(_tree.getFirst()->parent);
+     node first = _tree.getFirst();
+    if (first == nullptr)
+        return end();
+    node n = first->parent;
+    return const_iterator(n);
 }
 
 iterator end()
-{
-    return iterator(_tree.getEnd());
+{   
+    node last = _tree.getLast();
+    if (last == nullptr)
+        return iterator(nullptr);
+    node n = last;
+    return iterator(n);
 }
 
 const_iterator end() const
 {
-    return iterator(_tree.getEnd());
+    node last = _tree.getLast();
+    if (last == nullptr)
+        return iterator(nullptr);
+    node n = last;
+    return iterator(n);
 }
 
 reverse_iterator rbegin()
 {
-    return reverse_iterator(iterator(_tree.getEnd()->parent));
+    node last = _tree.getLast();
+    if (last == nullptr)
+        return reverse_iterator(iterator(nullptr));
+    node n = last->parent;
+    return reverse_iterator(iterator(n));
 }
 
 const_reverse_iterator rbegin() const
 {
-    return const_reverse_iterator(iterator(_tree.getEnd()->parent));
+    node last = _tree.getLast();
+    if (last == nullptr)
+        return const_reverse_iterator(iterator(nullptr));
+    node n = last->parent;
+    return const_reverse_iterator(iterator(n));
 }
 
 reverse_iterator rend()
 {
-    return reverse_iterator(iterator(_tree.getFirst()));
+    node n = _tree.getFirst();
+    if (n == nullptr)
+        return const_reverse_iterator(iterator(nullptr));
+    return reverse_iterator(iterator(n));
 }
 
 const_reverse_iterator rend() const
 {
-    return const_reverse_iterator(iterator(_tree.getFirst()));
+    node n = _tree.getFirst();
+    if (n == nullptr)
+        return const_reverse_iterator(iterator(nullptr));
+    return const_reverse_iterator(iterator(n));
 }
-
 
 bool empty() const
 {
+    size_t _size = _tree.getSize();
     return _size == 0;
 }
 
 size_type size() const
 {
+    size_type _size = _tree.getSize();
     return _size;
 }
 
@@ -342,6 +379,112 @@ size_type max_size() const
 {
     return std::min<std::size_t>(_alloc.max_size(),  \
                     std::numeric_limits<difference_type>::max());
+}
+
+void clear()
+{
+    _tree.deleteAllData();
+}
+
+ft::pair<iterator, bool> insert( const value_type& value )
+{
+    _tree.insertNode(value);
+    node node = _tree.getNode(value);
+    return ft::make_pair<iterator, bool>(iterator(node), true);
+}
+
+iterator insert( iterator pos, const value_type& value )
+{
+    node existNode = _tree.getNode(pos->first);
+    _tree.insertNode(existNode, value);
+    node insertedNode = _tree.getNode(value.first);
+    return iterator(insertedNode);
+}
+
+template< class InputIt >
+void insert( InputIt first, InputIt last )
+{
+    while (first != last)
+    {
+        _tree.insertNode(ft::make_pair(first->first, first->second));
+        first++;
+    }
+}
+
+iterator erase( iterator pos )
+{
+    _tree.deleteNode(pos->first);
+    return iterator(nullptr);
+}
+
+iterator erase( iterator first, iterator last )
+{
+    while (first != last)
+    {
+        _tree.deleteNode(first->first);
+        first++;
+    }
+    return iterator(nullptr);
+}
+
+size_type erase( const Key& key )
+{
+    node existNode = _tree.getNode(key);
+    size_type result = (existNode) ? 1 : 0;
+    _tree.deleteNode(key);
+    return result;
+}
+
+void swap( map& other )
+{
+    ft::RBTree<Key,T> tmp = this->_tree;
+    this->_tree = other._tree;
+    other._tree = tmp;
+}
+
+size_type count( const Key& key ) const
+{
+    node existNode = _tree.getNodeByKey(key);
+    size_type result = (existNode) ? 1 : 0;
+    return result;
+}
+
+iterator find( const Key& key )
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return end();
+    return iterator (existNode);
+}
+
+const_iterator find( const Key& key ) const
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return end();
+    return const_iterator (existNode);
+}
+
+ft::pair<iterator,iterator> equal_range( const Key& key )
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return ft::make_pair<iterator, iterator>(iterator(nullptr), iterator(nullptr));
+    iterator start(existNode);
+    iterator end(existNode);
+    end++;
+    return ft::make_pair<iterator, iterator>(start, end);
+}
+
+ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return ft::make_pair<const_iterator, const_iterator>(const_iterator(nullptr), const_iterator(nullptr));
+    const_iterator start(existNode);
+    const_iterator end(existNode);
+    end++;
+    return ft::make_pair<const_iterator, const_iterator>(start, end);
 }
 
     protected:

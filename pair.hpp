@@ -1,6 +1,8 @@
 #ifndef PAIR_HPP
 #define PAIR_HPP
 
+#include <type_traits>
+
 namespace ft
 {
 
@@ -23,9 +25,8 @@ template< class T1, class T2 >
 
         template< class U1, class U2 >
         pair( const pair<U1, U2>& p )
+        :first(p.first), second(p.second)
         {
-            first = p.first;
-            second = p.second;
         }
 
         pair& operator=( const pair& other )

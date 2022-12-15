@@ -46,7 +46,7 @@ class RBTree
     };
 
 public:
-   typedef T        dataType;
+   typedef T        *dataType;
    typedef TNode    *node;
 
 private:
@@ -60,6 +60,41 @@ private:
         dataPointer->first = data.first;
         dataPointer->second = data.second;
         return new TNode(dataPointer, type);
+    }
+
+
+    void insertNewRedNode(TNode *existData, TNode *newNode)
+    {
+        TNode *tar = existData;
+        TNode *parent = existData->parent;
+        TNode *sameNode = nullptr;
+        searchNode(head, &sameNode, newNode->data->first);
+        if (sameNode)
+        {
+            _alloc.destroy(sameNode->data);
+            _alloc.deallocate(sameNode->data, 1);
+            sameNode->data= newNode->data;
+            delete newNode;
+            return;
+        }
+        
+        while (tar)
+        {
+            if (tar && _comp(newNode->data->first, tar->data->first))
+            {
+                parent = tar;
+                tar = tar->left;
+            } else if (tar && _comp(tar->data->first, newNode->data->first))
+            {
+                parent = tar;
+                tar = tar->right;
+            }
+        }
+        newNode->parent = parent;
+        if (_comp(newNode->data->first, parent->data->first))
+            parent->left = newNode;
+        else
+            parent->right = newNode;
     }
 
     void insertNewRedNode(TNode *newNode)
@@ -537,11 +572,15 @@ private:
 		TNode *minDummy = new TNode();
 		TNode *maxDummy = new TNode();
 
-		TNode *tmp = getFirst();
+		TNode *tmp = head;
+		while (tmp->left)
+			tmp = tmp->left;
 		tmp->left = minDummy;
 		minDummy->parent = tmp;
 
-		tmp = getLast();
+		tmp = head;
+		while (tmp->right)
+			tmp = tmp->right;
 		tmp->right = maxDummy;
 		maxDummy->parent = tmp;
 	}
@@ -550,20 +589,35 @@ private:
 	{
 		if (!head)
 			return;
-		TNode *tmp = getFirst();
+		TNode *tmp = head;
+		while (tmp->left)
+			tmp = tmp->left;
 		if (tmp->type == NDummy)
 		{
 			tmp->parent->left = nullptr;
 			delete tmp;
 		}
 
-		tmp = getLast();
+		tmp = head;
+		while (tmp->right)
+			tmp = tmp->right;
 		if (tmp->type == NDummy)
 		{
 			tmp->parent->right = nullptr;
 			delete tmp;
 		}
 	}
+
+    void countNode(size_t *num, TNode *head)
+    {
+        if (!head)
+            return;
+        if (head->left)
+            countNode(head->left);
+        if (head->right)
+            countNode(head->right);
+        (*num)++;
+    }
 
 public:
     RBTree()
@@ -582,7 +636,6 @@ public:
     RBTree& operator=(const RBTree &data)
     {
         this->head = data.head;
-        data.head = nullptr;
         return *this;
     }
 
@@ -610,6 +663,25 @@ public:
         printRBTree(head->right);
     }
 
+    node getNode(T data)
+    {
+        deleteDummy();
+        node target = nullptr;
+        searchNode(head, &target, data.first);
+        insertDummy();
+        return target;
+    }
+
+    template<typename K>
+    node getNodeByKey(K key)
+    {
+        deleteDummy();
+        node target = nullptr;
+        searchNode(head, &target, key);
+        insertDummy();
+        return target;
+    }
+
     void insertNode(T data)
     {
         if (!head)
@@ -622,6 +694,15 @@ public:
 		deleteDummy();
         TNode *newNode = makeNewNode(data, NRed);
         insertNewRedNode(newNode);
+        checkDoubleRed();
+		insertDummy();
+    }
+
+    void insertNode(T existData, T data)
+    {
+        deleteDummy();
+        TNode *newNode = makeNewNode(data, NRed);
+        insertNewRedNode(existData, newNode);
         checkDoubleRed();
 		insertDummy();
     }
@@ -649,7 +730,7 @@ public:
     }
 
     template <typename S>
-    T getData(S key)
+    dataType getData(S key)
     {
 		deleteDummy();
         TNode *target = nullptr;
@@ -684,6 +765,13 @@ public:
 			tmp = tmp->right;
 		return tmp;
 	}
+
+    size_t getSize()
+    {
+        size_t num = 0;
+        countNode(&num, head);
+        return num;
+    }
 
     class NoSuchDataExcepton : public std::exception
     {
