@@ -37,8 +37,16 @@ namespace ft
             return tmp; 
         }
 
-        bool operator==(const random_access_iterator& other) const { return *(_iterator) == *(other._iterator); }
-        bool operator!=(const random_access_iterator& other) const { return *(_iterator) != *(other._iterator); }
+        bool operator==(const random_access_iterator& other) const { 
+            if (_iterator == nullptr || other._iterator == nullptr)
+                return _iterator == other._iterator;
+            return *(_iterator) == *(other._iterator); 
+        }
+        bool operator!=(const random_access_iterator& other) const { 
+            if (_iterator == nullptr || other._iterator == nullptr)
+                return _iterator == other._iterator;
+            return *(_iterator) != *(other._iterator); 
+        }
         reference operator*() const {T * __tmp = _iterator; return *__tmp;}
         random_access_iterator& operator+=(const difference_type other)  { _iterator += other; return *this; }
         random_access_iterator& operator-=(const difference_type other)  { _iterator -= other; return *this; }

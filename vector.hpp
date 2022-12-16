@@ -86,6 +86,18 @@ namespace ft
             }
         }
 
+        template<class It>
+        typename ft::iterator_traits<It>::difference_type 
+        getDistance(It first, It last)
+        {
+            typename ft::iterator_traits<It>::difference_type result = 0;
+            while (first != last) {
+                ++first;
+                ++result;
+            }
+            return result;
+        }
+
     public:
         vector()
         :_capacity(0), _c_idx(0)
@@ -300,6 +312,11 @@ namespace ft
         void reserve( size_type new_cap )
         {
             T *newArr = _alloc.allocate(new_cap);
+            if (_array == nullptr)
+            {
+                _array = newArr;
+                return;
+            }
             for(int i = 0; i < _c_idx; i++)
                 newArr[i] = _array[i];
             _alloc.deallocate(_array, _capacity);
@@ -320,6 +337,11 @@ namespace ft
 
         iterator insert( const_iterator pos, const T& value )
         {
+            if (pos == end())
+            {
+                push_back(value);
+                return end();
+            }
             int tarIdx = 0;
             _realloc_array();
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)
@@ -331,10 +353,17 @@ namespace ft
                 _array[tarIdx] = value;
                 _c_idx++;
             }
+            return iterator(pos + 1);
         }
 
         iterator insert( const_iterator pos, size_type count, const T& value )
         {
+            if (pos == end())
+            {
+                for(int i = 0; i < count; i++)
+                    push_back(value);
+                return end();
+            }
             int tarIdx = 0;
             _realloc_array(count);
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)
@@ -353,7 +382,13 @@ namespace ft
         template< class InputIt >
         iterator insert( const_iterator pos, InputIt first, InputIt last )
         {
-            int size = std::distance(first, last);
+            if (pos == end())
+            {
+                for(; first != last; first++)
+                    push_back(*first);
+                return end();
+            }
+            int size = getDistance(first, last);
             int tarIdx = 0;
             _realloc_array(size);
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)

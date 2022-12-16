@@ -2,6 +2,7 @@
 #define PAIR_HPP
 
 #include <type_traits>
+#include <algorithm>
 
 namespace ft
 {
@@ -29,12 +30,22 @@ template< class T1, class T2 >
         {
         }
 
-        pair& operator=( const pair& other )
+        pair& operator=( const pair& p )
         {
-            first = other.first;
-            second = other.second;
+            first = p.first;
+            second = p.second;
             return *this;
         }
+
+        template< class U1, class U2 >
+        pair& operator=( const pair<U1, U2>& p )
+        {
+            first = p.first;
+            second = p.second;
+            return *this;
+        }
+
+        ~pair() {}
     };
 
     template< class T1, class T2 >

@@ -1,63 +1,189 @@
 #include "vector.hpp"
 #include "stack.hpp"
+#include "map.hpp"
+#include "pair.hpp"
+
 #include <iostream>
 #include <vector>
 #include <stack>
-#include "red_black_tree.hpp"
-#include "pair.hpp"
 #include <map>
-#include "map.hpp"
+
+//#define FT_CONTAINER
+#define STD_CONTAINER
+
+#ifdef FT_CONTAINER
+
+typedef ft::pair<int, float> pair;
+typedef ft::map<int, float> map;
+typedef ft::map<int, float>::iterator map_iterator;
+typedef ft::pair<map_iterator, map_iterator> pair_iterator;
+typedef ft::map<int, float>::reverse_iterator reverse_iterator;
+#define MAKE_PAIR ft::make_pair<int, float>
+
+#endif
+
+#ifdef STD_CONTAINER
+
+typedef std::pair<int, float> pair;
+typedef std::map<int, float> map;
+typedef std::map<int, float>::iterator map_iterator;
+typedef std::pair<map_iterator, map_iterator> pair_iterator;
+typedef std::map<int, float>::reverse_iterator reverse_iterator;
+#define MAKE_PAIR std::make_pair<int, float>
+
+#endif
+
+
 
 int main()
-{	
+{
 
-	// ft::map< int, float> num_map;
-  	// num_map.insert(ft::make_pair(1, 2.3));
-	// num_map.insert(ft::make_pair(1, 20.2));
-	// num_map.insert(ft::make_pair(3, 2.3));
-	// num_map.insert(ft::make_pair(2, 2.3));
-	// num_map.insert(ft::make_pair(5, 2.3));
-	// num_map.insert(ft::make_pair(7, 2.3));
+	std::cout << "\n======================= map test ===========================" << "\n\n";
+	map map1;
+	std::cout << "     [insert map test]    " << "\n";
+	map1.insert(MAKE_PAIR(1, 5.1));
+	map1.insert(MAKE_PAIR(2, 1.4));
+	map1.insert(MAKE_PAIR(3, 2.5));
+	map1.insert(MAKE_PAIR(4, 2.1));
+	map1[5] = 2.56;
+	map1.insert(map1.begin(), MAKE_PAIR(6, 6.2255));
 
-	// std::cout << num_map.at(1) << "\n";
-	// num_map.clear();
-	// std::cout << num_map.size() << "\n";
-	// num_map.at(1);
+	map_iterator it = map1.begin();
+	map_iterator it2 = map1.end();
+	std::cout << "print map1 with iterator" << "\n";
+	while (it != it2)
+	{
+		std::cout << "m[" << it->first << "] = " << it->second << '\n';
+		it++;
+	}
 
+	it = map1.begin();
+	it2 = map1.end();
+	map map2;
+	map2.insert(it, it2);
+	std::cout << "print map2 with reverse_iterator" << "\n";
+	reverse_iterator rit = map1.rbegin();
+	reverse_iterator rit2 = map1.rend();
+	while (rit != rit2)
+	{
+		std::cout << "m[" << rit->first << "] = " << rit->second << '\n';
+		rit++;
+	}
+	
+	std::cout << "\n[clear test]\n";
+	map1.clear();
+	it = map1.begin();
+	it2 = map1.end();
+	while (it != it2)
+	{
+		std::cout << "m[" << it->first << "] = " << it->second << '\n';
+		it++;
+	}
+	std::cout << "after clear map size = " << map1.size() << "\n";
 
-	// ft::map< int, float>::reverse_iterator it1 = num_map.rbegin();
-	// ft::map< int, float>::reverse_iterator it2 = num_map.rend();
+	std::cout << "\n[at test]" << "\n";
+	std::cout << "m[" << 1 << "] = " << map2.at(1) << '\n';
 
-	// it2--;
-	// std::cout << "it1 = " << it1->first << " " << it1->second << "\n";
-	// std::cout << "it2 = " << it2->first << " " << it2->second << "\n";
-	// std::cout << (it2 <= it1) << "\n";
-
-
-
-
-	// ft::vector<int> v1;
-	// v1.push_back(1);
-	// v1.push_back(2);
-
-	// ft::vector<int>::reverse_iterator v_it1 = v1.rbegin();
-	// ft::vector<int>::reverse_iterator v_it2 = v1.rend();
-
-	// v_it2--;
-	// std::cout << "v_it1 = " << *v_it1 << "\n";
-	// std::cout << "v_it2 = " << *v_it2 << "\n";
-	// std::cout << (v_it1 <= v_it2) << "\n";
-
-
-	ft::map<int, float> map;
-	map.insert(ft::make_pair<int, float>(1, 5.1));
-	map.insert(ft::make_pair<int, float>(2, 1.4));
-	map.insert(ft::make_pair<int, float>(3, 2.5));
-	map.insert(ft::make_pair<int, float>(4, 2.1));
-
-	auto p = map.equal_range(3);
-	for (auto& q = p.first; q != p.second; ++q) {
+	std::cout << "\n[equal_range test]" << "\n";
+	pair_iterator p = map2.equal_range(3);
+	for (map_iterator q = p.first; q != p.second; ++q) {
             std::cout << "m[" << q->first << "] = " << q->second << '\n';
     }
+
+	std::cout << "\n[lower_bound test]" << "\n";
+	map_iterator lb = map2.lower_bound(3);
+	std::cout << "m[" << lb->first << "] = " << lb->second << '\n';
+	lb++;
+	std::cout << "m[" << lb->first << "] = " << lb->second << '\n';
+
+	std::cout << "\n[upper_bound test]" << "\n";
+	map_iterator ub = map2.upper_bound(3);
+	std::cout << "m[" << ub->first << "] = " << ub->second << '\n';
+	ub++;
+	std::cout << "m[" << ub->first << "] = " << ub->second << '\n';
+	
+
+	std::cout << "\n[find test]" << "\n";
+	map_iterator f = map2.find(3);
+	std::cout << "m[" << f->first << "] = " << f->second << '\n';
+
+	std::cout << "\n[erase test]" << "\n";
+	map2.erase(3);
+	it = map2.begin();
+	it2 = map2.end();
+	while (it != it2)
+	{
+		std::cout << "m[" << it->first << "] = " << it->second << '\n';
+		it++;
+	}
+
+	std::cout << "\n[swap test]" << "\n";
+	map map3;
+	map3.insert(MAKE_PAIR(5, 5.1));
+	map3.insert(MAKE_PAIR(6, 1.4));
+	map3.insert(MAKE_PAIR(7, 2.5));
+	map3.insert(MAKE_PAIR(8, 2.1));
+	map3[9] = 2.56;
+	map3.insert(map3.begin(), MAKE_PAIR(3, 6.2255));
+
+	map3.swap(map2);
+	it = map3.begin();
+	it2 = map3.end();
+	std::cout << "===== map3 === \n";
+	while (it != it2)
+	{
+		std::cout << "m[" << it->first << "] = " << it->second << '\n';
+		it++;
+	}
+
+	std::cout << "===== map2 === \n";
+	it = map2.begin();
+	it2 = map2.end();
+	while (it != it2)
+	{
+		std::cout << "m[" << it->first << "] = " << it->second << '\n';
+		it++;
+	}
+
+	std::cout << "\n[empty test]" << "\n";
+	std::cout << "map1 is empty? " << map1.empty() << "\n";
+	std::cout << "map2 is empty? " << map2.empty() << "\n";
+	std::cout << "map3 is empty? " << map3.empty() << "\n";
+
+	std::cout << "\n[size test]\n";
+	std::cout << "map1 size = " << map1.size() << "\n";
+	std::cout << "map2 size = " << map2.size() << "\n";
+	std::cout << "map3 size = " << map3.size() << "\n";
+
+	std::cout << "\n[operator= test (map4 = map3)]\n";
+	std::cout << "===== map4 === \n";
+	map map4;
+	map4 = map3;
+	it = map4.begin();
+	it2 = map4.end();
+	while (it != it2)
+	{
+		std::cout << "m[" << it->first << "] = " << it->second << '\n';
+		it++;
+	}
+
+	std::cout << "\n[operator== test (map4 == map3)]\n";
+	std::cout << "map4 == map3 ? " << (map4 == map3) << "\n";
+
+	std::cout << "\n[operator!= test (map4 != map3)]\n";
+	std::cout << "map4 != map3 ? " << (map4 != map3) << "\n";
+
+	std::cout << "\n[operator< test (map4 < map3)]\n";
+	std::cout << "map4 < map3 ? " << (map4 < map3) << "\n";
+
+	std::cout << "\n[operator<= test (map4 <= map3)]\n";
+	std::cout << "map4 <= map3 ? " << (map4 <= map3) << "\n";
+
+	std::cout << "\n[operator> test (map4 > map3)]\n";
+	std::cout << "map4 > map3 ? " << (map4 > map3) << "\n";
+
+	std::cout << "\n[operator>= test (map4 >= map3)]\n";
+	std::cout << "map4 >= map3 ? " << (map4 >= map3) << "\n";
+
 	return 0;
 }

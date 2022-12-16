@@ -6,10 +6,12 @@
 #include "iterator_traits.hpp"
 #include "red_black_tree.hpp"
 #include <stdexcept>
+#include "vector.hpp"
+
 namespace ft
 {
 
-template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > > 
+template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<Key, T> > > 
 class map
 {
 
@@ -194,11 +196,10 @@ template< class Iter >
     
     };
 
-
 public:
     typedef Key                                     key_type;
     typedef T                                       mapped_type;
-    typedef ft::pair<const Key, T>                  value_type;
+    typedef ft::pair<Key, T>                        value_type;
     typedef std::size_t                             size_type;
     typedef std::ptrdiff_t                          difference_type;
     typedef Compare                                 key_compare;
@@ -213,11 +214,30 @@ public:
     typedef reverse_iterator_map<iterator>          reverse_iterator;
     typedef const reverse_iterator_map<iterator>    const_reverse_iterator;
 
-
-private:
+public:
 allocator_type      _alloc;
 Compare             _comp;
 ft::RBTree<Key,T>   _tree;
+
+protected:
+    class value_compare
+    {
+    private:
+        Compare _comp;
+
+        value_compare() {}
+
+    public:
+        
+        value_compare( Compare comp )
+        :_comp(comp)
+        {
+        }
+        bool operator()( const value_type& x, const value_type& y ) const
+        {
+            return _comp(x.first, y.first);
+        }
+    };
 
 public:
 map()
@@ -395,9 +415,9 @@ ft::pair<iterator, bool> insert( const value_type& value )
 
 iterator insert( iterator pos, const value_type& value )
 {
-    node existNode = _tree.getNode(pos->first);
-    _tree.insertNode(existNode, value);
-    node insertedNode = _tree.getNode(value.first);
+    (void) pos;
+    insert(value);
+    node insertedNode = _tree.getNodeByKey(value.first);
     return iterator(insertedNode);
 }
 
@@ -429,7 +449,7 @@ iterator erase( iterator first, iterator last )
 
 size_type erase( const Key& key )
 {
-    node existNode = _tree.getNode(key);
+    node existNode = _tree.getNodeByKey(key);
     size_type result = (existNode) ? 1 : 0;
     _tree.deleteNode(key);
     return result;
@@ -437,9 +457,14 @@ size_type erase( const Key& key )
 
 void swap( map& other )
 {
-    ft::RBTree<Key,T> tmp = this->_tree;
-    this->_tree = other._tree;
-    other._tree = tmp;
+    ft::vector<value_type> saveOther;
+    saveOther.insert(saveOther.begin(), other.begin(), other.end());
+    ft::vector<value_type> saveThis;
+    saveThis.insert(saveThis.begin(), this->begin(), this->end());
+    this->clear();
+    other.clear();
+    this->insert(saveOther.begin(), saveOther.end());
+    other.insert(saveThis.begin(), saveThis.end());
 }
 
 size_type count( const Key& key ) const
@@ -487,25 +512,129 @@ ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
     return ft::make_pair<const_iterator, const_iterator>(start, end);
 }
 
-    protected:
-    class value_compare
+iterator lower_bound( const Key& key )
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return end();
+    return iterator (existNode);
+}
+
+const_iterator lower_bound( const Key& key ) const
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return end();
+    return const_iterator (existNode);
+}
+
+iterator upper_bound( const Key& key )
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return end();
+    iterator it(existNode);
+    it++;
+    return it;
+}
+
+const_iterator upper_bound( const Key& key ) const
+{
+    node existNode = _tree.getNodeByKey(key);
+    if (!existNode)
+        return end();
+    const_iterator it(existNode);
+    it++;
+    return it;
+}
+
+key_compare key_comp() const
+{
+    return _comp;
+}
+
+
+value_compare value_comp() const
+{
+    return value_compare(_comp);
+}
+
+template< class K, class V, class Comp, class All >
+friend bool operator==( const map<K,V,Comp,All>& lhs, const map<Key,T,Comp,All>& rhs )
+{
+    if (lhs.size() != rhs.size())
+        return false;
+    typename map<K,V,Comp,All>::iterator it1 = lhs.begin();
+    typename map<K,V,Comp,All>::iterator it2 = rhs.begin();
+    while (it1 != lhs.end() && it2 != rhs.end())
     {
-    private:
-        Compare _comp;
+        if (it1->first != it2->first || it1->second != it2->second)
+            return false;
+        it1++;
+        it2++;
+    }
+    if (it1 != lhs.end() || it2 != rhs.end())
+        return false;
+    return true;
+}
 
-        value_compare() {}
+template< class K, class V, class Comp, class All >
+friend bool operator!=( const map<K,V,Comp,All>& lhs, const map<Key,T,Comp,All>& rhs )
+{
+    return !(lhs == rhs);
+}
 
-    public:
-        
-        value_compare( Compare comp )
-        :_comp(comp)
-        {
-        }
-        bool operator()( const value_type& x, const value_type& y ) const
-        {
-            return _comp(x.first, y.first);
-        }
-    };
+template< class K, class V, class Comp, class All >
+friend bool operator<( const map<K,V,Comp,All>& lhs, const map<Key,T,Comp,All>& rhs )
+{
+    typename map<K,V,Comp,All>::iterator it1 = lhs.begin();
+    typename map<K,V,Comp,All>::iterator it2 = rhs.begin();
+    while (it1 != lhs.end() && it2 != rhs.end())
+    {
+        if (it1->first != it2->first)
+            return it1->first < it2->first;
+        if (it1->second != it2->second)
+            return it1->second < it2->second;
+        it1++;
+        it2++;
+    }
+    return (lhs.size() < rhs.size());
+}
+
+template< class K, class V, class Comp, class All >
+friend bool operator<=( const map<K,V,Comp,All>& lhs, const map<Key,T,Comp,All>& rhs )
+{
+    typename map<K,V,Comp,All>::iterator it1 = lhs.begin();
+    typename map<K,V,Comp,All>::iterator it2 = rhs.begin();
+    while (it1 != lhs.end() && it2 != rhs.end())
+    {
+        if (it1->first != it2->first)
+            return it1->first < it2->first;
+        if (it1->second != it2->second)
+            return it1->second < it2->second;
+        it1++;
+        it2++;
+    }
+    return (lhs.size() <= rhs.size());
+}
+
+template< class K, class V, class Comp, class All >
+friend bool operator>( const map<K,V,Comp,All>& lhs, const map<Key,T,Comp,All>& rhs )
+{
+    return !(lhs <= rhs);
+}
+
+template< class K, class V, class Comp, class All >
+friend bool operator>=( const map<K, V, Comp, All>& lhs, const map<Key, T, Comp, All>& rhs )
+{
+    return !(lhs < rhs);
+}
+
+template< class K, class V, class Comp, class All >
+friend void swap( map<K, V, Comp, All>& x, map<K, V, Comp, All>& y )
+{
+    x.swap(y);
+}
 
 };
 

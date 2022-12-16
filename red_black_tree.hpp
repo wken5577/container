@@ -243,7 +243,6 @@ private:
     {
         TNode *p = dblRedTarget->parent;
         TNode *g = dblRedTarget->parent->parent;
-        TNode *n = dblRedTarget;
         TNode *u;
 
         if (g->left == p)
@@ -392,7 +391,7 @@ private:
         return false;
     }
 
-    bool case3(bool left, TNode *sibling, TNode *p, TNode *sr, TNode *sl)
+    bool case3(bool left, TNode *sibling, TNode *sr, TNode *sl)
     {
         if (left && sibling->type == NBlack && sl && sl->type == NRed && (!sr || sr->type == NBlack))
         {
@@ -428,7 +427,7 @@ private:
         return false;
     }
 
-    bool case1(bool left, TNode *sibling, TNode *p, TNode *sr, TNode *sl)
+    bool case1(bool left, TNode *sibling, TNode *p)
     {
         if (sibling->type == NRed)
         {
@@ -464,7 +463,7 @@ private:
                 //doubly black control
                 if (case4(left, sibling, p, sr, sl))
                     return;
-                if (case3(left, sibling, p, sr, sl))
+                if (case3(left, sibling, sr, sl))
                 {
                     sibling = (node->parent->left == node) ? node->parent->right : node->parent->left;
                     p = node->parent;
@@ -475,7 +474,7 @@ private:
                 }
                 if (case2(left, sibling, p, sr, sl))
                     return;
-                if (case1(left, sibling, p, sr, sl))
+                if (case1(left, sibling, p))
                     return;
             }
         }
@@ -608,15 +607,16 @@ private:
 		}
 	}
 
-    void countNode(size_t *num, TNode *head)
+    void countNode(size_t *num, TNode *head) const
     {
         if (!head)
             return;
         if (head->left)
-            countNode(head->left);
+            countNode(num, head->left);
         if (head->right)
-            countNode(head->right);
-        (*num)++;
+            countNode(num, head->right);
+        if (head->type != NDummy)
+            (*num)++;
     }
 
 public:
@@ -698,15 +698,6 @@ public:
 		insertDummy();
     }
 
-    void insertNode(T existData, T data)
-    {
-        deleteDummy();
-        TNode *newNode = makeNewNode(data, NRed);
-        insertNewRedNode(existData, newNode);
-        checkDoubleRed();
-		insertDummy();
-    }
-
     template <typename S>
     void deleteNode(S key)
     {
@@ -741,12 +732,12 @@ public:
         return target->data;
     }
 
-    TNode *getTreeHead()
+    TNode *getTreeHead() const
     {
         return this->head;
     }
 
-	TNode *getFirst()
+	TNode *getFirst() const
 	{
 		if (!head)
 			return nullptr;
@@ -756,7 +747,7 @@ public:
 		return tmp;
 	}
 
-	TNode *getLast()
+	TNode *getLast() const
 	{
 		if (!head)
 			return nullptr;
@@ -766,7 +757,7 @@ public:
 		return tmp;
 	}
 
-    size_t getSize()
+    size_t getSize() const
     {
         size_t num = 0;
         countNode(&num, head);
