@@ -8,7 +8,7 @@
 #include <stack>
 #include <map>
 
-//#define FT_CONTAINER
+// #define FT_CONTAINER
 #define STD_CONTAINER
 
 #ifdef FT_CONTAINER
@@ -109,6 +109,11 @@ int main()
 
 	std::cout << "\n[erase test]" << "\n";
 	map2.erase(3);
+	it = map2.begin();
+	it++;
+	it++;
+	it++;
+	map2.erase(it, map2.end());
 	it = map2.begin();
 	it2 = map2.end();
 	while (it != it2)

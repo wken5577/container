@@ -317,7 +317,7 @@ namespace ft
                 _array = newArr;
                 return;
             }
-            for(int i = 0; i < _c_idx; i++)
+            for(size_type i = 0; i < _c_idx; i++)
                 newArr[i] = _array[i];
             _alloc.deallocate(_array, _capacity);
             _capacity = new_cap;
@@ -389,15 +389,15 @@ namespace ft
                 return end();
             }
             int size = getDistance(first, last);
-            int tarIdx = 0;
+            size_type tarIdx = 0;
             _realloc_array(size);
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)
                 tarIdx++;
             if (tarIdx != _c_idx)
             {
-                for(int i = _c_idx - 1; i >= tarIdx; i--)
+                for(size_type i = _c_idx - 1; i >= tarIdx; i--)
                     _array[i] = _array[i + size];
-                for(int i = tarIdx; i < tarIdx + size; i++)
+                for(size_type i = tarIdx; i < tarIdx + size; i++)
                 {
                     _array[i] = *first;
                     first++;
@@ -409,13 +409,13 @@ namespace ft
 
         iterator erase( iterator pos )
         {
-            int tarIdx = 0;
+            size_type tarIdx = 0;
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)
                 tarIdx++;
             if (tarIdx == _c_idx)
                 return iterator();
             _alloc.destroy(_array + tarIdx);
-            for(int i = tarIdx; i < _c_idx - 1; i++)
+            for(size_type i = tarIdx; i < _c_idx - 1; i++)
                 _array[i] = _array[i + 1];
             _c_idx--;
             return iterator(_array + tarIdx);
@@ -423,15 +423,15 @@ namespace ft
 
         iterator erase( iterator first, iterator last )
         {
-            int size = std::distance(first, last);
-            int tarIdx = 0;
+            size_type size = std::distance(first, last);
+            size_type tarIdx = 0;
             while (tarIdx < _c_idx && _array[tarIdx] != *first)
                 tarIdx++;
             if (tarIdx == _c_idx)
                 return iterator();
-            for(int i = tarIdx; i < size; i++)
+            for(size_type i = tarIdx; i < size; i++)
                 _alloc.destroy(_array + i);
-            for(int i = tarIdx; i < _c_idx - 1; i++)
+            for(size_type i = tarIdx; i < _c_idx - 1; i++)
                 _array[i] = _array[i + size];
             _c_idx -= size;
             return iterator(_array + tarIdx);

@@ -55,9 +55,7 @@ public:
         return _iterator->data == other._iterator->data; 
     }
     bool operator!=(const iteratorMap& other) const { 
-        if (!_iterator || !other._iterator)
-            return _iterator != other._iterator;
-        return _iterator->data != other._iterator->data; 
+        return !operator==(other); 
     }
     bool operator<(const iteratorMap& other) const { return _iterator->data < other._iterator->data; }
     bool operator>(const iteratorMap& other) const { return _iterator->data > other._iterator->data; }
@@ -438,11 +436,14 @@ iterator erase( iterator pos )
 }
 
 iterator erase( iterator first, iterator last )
-{
-    while (first != last)
+{   
+    ft::vector<value_type> savedData;
+    savedData.insert(savedData.begin(), first, last);
+    typename ft::vector<value_type>::iterator it = savedData.begin();
+    while (it != savedData.end())
     {
-        _tree.deleteNode(first->first);
-        first++;
+        _tree.deleteNode(it->first);
+        it++;
     }
     return iterator(nullptr);
 }
@@ -451,7 +452,8 @@ size_type erase( const Key& key )
 {
     node existNode = _tree.getNodeByKey(key);
     size_type result = (existNode) ? 1 : 0;
-    _tree.deleteNode(key);
+    if (result == 1)
+        _tree.deleteNode(key);
     return result;
 }
 
