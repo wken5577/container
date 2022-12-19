@@ -10,6 +10,7 @@
 #include "iterator_traits.hpp"
 #include "reverse_iterator.hpp"
 #include "random_access_iterator.hpp"
+#include <iostream>
 
 namespace ft
 {
@@ -36,20 +37,20 @@ namespace ft
     private:
         T *             _array;
         allocator_type  _alloc;
-        size_type       _capacity;
-        size_type       _c_idx;
+        int             _capacity;
+        int             _c_idx;
 
     private:
         void _destroy_all()
         {
-            for(size_type i = 0; i < _c_idx; i++)
+            for(int i = 0; i < _c_idx; i++)
             {
                 _alloc.destroy(_array + i);
             }
         }
-        void _realloc_array(size_type newCap)
+        void _realloc_array(int newCap)
         {
-            if (_c_idx == _capacity)
+            if (_c_idx + newCap >= _capacity)
             {
                 _capacity = (_capacity + newCap) * 2;
                 reserve(_capacity);
@@ -69,9 +70,9 @@ namespace ft
 
         void _fill_array(size_type count, const_reference value)
         {
-            while (_c_idx < count)
+            while ((size_type) _c_idx < count)
             {
-                _array[_c_idx] = value;
+                 _alloc.construct(_array + _c_idx, value);
                 _c_idx++;
             }
         }
@@ -81,16 +82,15 @@ namespace ft
         {
             while (first != last)
             {
-                _array[_c_idx++] = *first;
+                _alloc.construct(_array + _c_idx++, *first);
                 first++;
             }
         }
 
         template<class It>
-        typename ft::iterator_traits<It>::difference_type 
-        getDistance(It first, It last)
+        size_type getDistance(It first, It last)
         {
-            typename ft::iterator_traits<It>::difference_type result = 0;
+            size_type result = 0;
             while (first != last) {
                 ++first;
                 ++result;
@@ -129,7 +129,10 @@ namespace ft
         }
 
         vector(const vector& other)
+        :_capacity(0), _c_idx(0)
         {
+            _alloc = Allocator();
+            _array = nullptr;
             *this = other;            
         }
 
@@ -167,7 +170,7 @@ namespace ft
                 _alloc.deallocate(_array, _capacity);
             }
             this->_c_idx = 0;
-            this->_capacity = count;
+            this->_capacity = (int) count;
             this->array = _alloc.allocate(this->_capacity);
             _fill_array(count, value);
         }
@@ -180,7 +183,7 @@ namespace ft
                 _destroy_all();
                 _alloc.deallocate(_array, _capacity);
             }
-            size_type count = 0;
+            int count = 0;
             InputIt tmp = first;
             while (tmp != last)
             {
@@ -317,8 +320,8 @@ namespace ft
                 _array = newArr;
                 return;
             }
-            for(size_type i = 0; i < _c_idx; i++)
-                newArr[i] = _array[i];
+            for(int i = 0; i < _c_idx; i++)
+                _alloc.construct(newArr + i, _array[i]);
             _alloc.deallocate(_array, _capacity);
             _capacity = new_cap;
             _array = newArr;
@@ -349,8 +352,8 @@ namespace ft
             if (tarIdx != _c_idx)
             {
                 for(int i = _c_idx - 1; i >= tarIdx; i--)
-                    _array[i] = _array[i + 1];
-                _array[tarIdx] = value;
+                    _alloc.construct(_array + i + 1, _array[i]);
+                 _alloc.construct(_array + tarIdx, value);
                 _c_idx++;
             }
             return iterator(pos + 1);
@@ -360,7 +363,7 @@ namespace ft
         {
             if (pos == end())
             {
-                for(int i = 0; i < count; i++)
+                for(size_type i = 0; i < count; i++)
                     push_back(value);
                 return end();
             }
@@ -371,9 +374,9 @@ namespace ft
             if (tarIdx != _c_idx)
             {
                 for(int i = _c_idx - 1; i >= tarIdx; i--)
-                    _array[i] = _array[i + count];
-                for(int i = tarIdx; i < tarIdx + count; i++)
-                    _array[i] = value;
+                     _alloc.construct(_array + i, _array[i + (int) count]);
+                for(int i = tarIdx; i < tarIdx + (int) count; i++)
+                     _alloc.construct(_array + i, value);
                 _c_idx += count;
             }
             return iterator(_array + tarIdx);
@@ -389,17 +392,17 @@ namespace ft
                 return end();
             }
             int size = getDistance(first, last);
-            size_type tarIdx = 0;
+            int tarIdx = 0;
             _realloc_array(size);
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)
                 tarIdx++;
             if (tarIdx != _c_idx)
             {
-                for(size_type i = _c_idx - 1; i >= tarIdx; i--)
-                    _array[i] = _array[i + size];
-                for(size_type i = tarIdx; i < tarIdx + size; i++)
+                for(int i = _c_idx - 1;  i >= tarIdx; i--)
+                    _alloc.construct(_array + i, _array[i + size]);
+                for(int i = tarIdx; i < tarIdx + size; i++)
                 {
-                    _array[i] = *first;
+                     _alloc.construct(_array + i, *first);
                     first++;
                 }
                 _c_idx += size;
@@ -409,30 +412,30 @@ namespace ft
 
         iterator erase( iterator pos )
         {
-            size_type tarIdx = 0;
+            int tarIdx = 0;
             while (tarIdx < _c_idx && _array[tarIdx] != *pos)
                 tarIdx++;
             if (tarIdx == _c_idx)
                 return iterator();
             _alloc.destroy(_array + tarIdx);
-            for(size_type i = tarIdx; i < _c_idx - 1; i++)
-                _array[i] = _array[i + 1];
+            for(int i = tarIdx; i < _c_idx - 1; i++)
+                 _alloc.construct(_array + i, _array[i + 1]);
             _c_idx--;
             return iterator(_array + tarIdx);
         }
 
         iterator erase( iterator first, iterator last )
         {
-            size_type size = std::distance(first, last);
-            size_type tarIdx = 0;
+            int size = getDistance(first, last);
+            int tarIdx = 0;
             while (tarIdx < _c_idx && _array[tarIdx] != *first)
                 tarIdx++;
             if (tarIdx == _c_idx)
                 return iterator();
-            for(size_type i = tarIdx; i < size; i++)
+            for(int i = tarIdx; i < size; i++)
                 _alloc.destroy(_array + i);
-            for(size_type i = tarIdx; i < _c_idx - 1; i++)
-                _array[i] = _array[i + size];
+            for(int i = tarIdx; i < _c_idx - 1; i++)
+                _alloc.construct(_array + i, _array[i + size]);
             _c_idx -= size;
             return iterator(_array + tarIdx);
         }
@@ -440,7 +443,7 @@ namespace ft
         void push_back( const T& value )
         {
             _realloc_array();
-            _array[_c_idx++] = value;
+            _alloc.construct(_array + _c_idx++, value);
         }
 
         void pop_back()
@@ -461,7 +464,7 @@ namespace ft
                 newArr[i] = _array[i];
             _alloc.deallocate(_array, _capacity);
             _array = newArr;
-            for(size_type i = _c_idx; i < count; i++)
+            for(int i = _c_idx; i < (int) count; i++)
                 _alloc.construct(_array + i, 0);
             _c_idx = count;
             _capacity = count;
@@ -472,11 +475,11 @@ namespace ft
             if (_capacity >= count)
                 return;
             T *newArr = _alloc.allocate(count);
-            for(size_type i = 0; i < _c_idx; i++)
+            for(int i = 0; i < _c_idx; i++)
                 newArr[i] = _array[i];
             _alloc.deallocate(_array, _capacity);
             _array = newArr;
-            for(size_type i = _c_idx; i < count; i++)
+            for(int i = _c_idx; i < (int) count; i++)
                 _alloc.construct(_array + i, value);
             _c_idx = count;
             _capacity = count;

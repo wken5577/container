@@ -8,8 +8,8 @@
 #include <stack>
 #include <map>
 
-// #define FT_CONTAINER
-#define STD_CONTAINER
+#define FT_CONTAINER
+// #define STD_CONTAINER
 
 #ifdef FT_CONTAINER
 
@@ -19,6 +19,11 @@ typedef ft::map<int, float>::iterator map_iterator;
 typedef ft::pair<map_iterator, map_iterator> pair_iterator;
 typedef ft::map<int, float>::reverse_iterator reverse_iterator;
 #define MAKE_PAIR ft::make_pair<int, float>
+
+typedef ft::vector<int> vector;
+typedef ft::vector<int>::iterator iteratorVector;
+typedef ft::vector<int>::reverse_iterator reverseIterator;
+
 
 #endif
 
@@ -31,12 +36,62 @@ typedef std::pair<map_iterator, map_iterator> pair_iterator;
 typedef std::map<int, float>::reverse_iterator reverse_iterator;
 #define MAKE_PAIR std::make_pair<int, float>
 
+typedef std::vector<int> vector;
+typedef std::vector<int>::iterator iteratorVector;
+typedef std::vector<int>::reverse_iterator reverseIterator;
+
 #endif
 
 
 
 int main()
 {
+
+	std::cout << "\n======================= vector test ===========================" << "\n\n";
+	vector vec1;
+	std::cout << "     [insert vector test]    " << "\n";
+	vec1.push_back(1);
+	vec1.insert(vec1.begin(), 0);
+	vec1.push_back(5);
+	vec1.push_back(2);
+	vec1.push_back(3);
+
+	std::cout << "print vec1 with iterator" << "\n";
+	iteratorVector vItStart = vec1.begin();
+	iteratorVector vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	vector vec2;
+	vec2.insert(vec2.begin(), vec1.begin(), vec1.end());
+	std::cout << "print vec2 with reverse iterator" << "\n";
+	reverseIterator vRitStart = vec2.rbegin();
+	reverseIterator vRitEnd = vec2.rend();
+	while (vRitStart != vRitEnd)
+	{
+		std::cout << *vRitStart << " ";
+		vRitStart++;
+	}
+	std::cout << "\n";
+
+	std::cout << "\n     [=operator test (vec3 = vec2)]    " << "\n";
+	vector vec3 = vec2;
+	std::cout << "print vec3 with iterator" << "\n";
+	vItStart = vec3.begin();
+	vItEnd = vec3.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	
+
 
 	std::cout << "\n======================= map test ===========================" << "\n\n";
 	map map1;

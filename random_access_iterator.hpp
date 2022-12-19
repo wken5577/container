@@ -40,12 +40,12 @@ namespace ft
         bool operator==(const random_access_iterator& other) const { 
             if (_iterator == nullptr || other._iterator == nullptr)
                 return _iterator == other._iterator;
-            return *(_iterator) == *(other._iterator); 
+            return _iterator == other._iterator;
         }
         bool operator!=(const random_access_iterator& other) const { 
             if (_iterator == nullptr || other._iterator == nullptr)
                 return _iterator == other._iterator;
-            return *(_iterator) != *(other._iterator); 
+            return _iterator != other._iterator; 
         }
         reference operator*() const {T * __tmp = _iterator; return *__tmp;}
         random_access_iterator& operator+=(const difference_type other)  { _iterator += other; return *this; }
@@ -55,10 +55,10 @@ namespace ft
         random_access_iterator operator+(const random_access_iterator& other) const  { return random_access_iterator(*this + other._iterator); }
         difference_type operator-(const random_access_iterator& other) const  { return std::distance(_iterator, other._iterator); }
         reference operator[](std::size_t index) const { return _iterator[index]; }
-        bool operator<(const random_access_iterator& other) const { return *(_iterator) < *(other._iterator); }
-        bool operator>(const random_access_iterator& other) const { return *(_iterator) > *(other._iterator); }
-        bool operator<=(const random_access_iterator& other) const { return *(_iterator) <= *(other._iterator); }
-        bool operator>=(const random_access_iterator& other) const { return *(_iterator) >= *(other._iterator); }
+        bool operator<(const random_access_iterator& other) const { return _iterator < other._iterator; }
+        bool operator>(const random_access_iterator& other) const { return _iterator > other._iterator; }
+        bool operator<=(const random_access_iterator& other) const { return _iterator <= other._iterator; }
+        bool operator>=(const random_access_iterator& other) const { return _iterator >= other._iterator; }
     };
 
 
