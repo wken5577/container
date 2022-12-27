@@ -501,98 +501,98 @@ namespace ft
             other._capacity = tmpCapacity;
             other._c_idx = tmpIdx;
         }
-
-        template< class S, class Alloc >
-        friend bool operator==( const vector<S, Alloc>& lhs, const vector<S, Alloc>& rhs )
-        {
-            if (lhs._c_idx != rhs._c_idx)
-                return false;
-            for(int i = 0; i < lhs._c_idx; i++)
-            {
-                if (lhs._array[i] != rhs._array[i])
-                    return false;
-            }
-            return true;
-        }
-
-        template< class S, class Alloc >
-        friend bool operator!=( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
-        {
-            return !operator==(lhs, rhs);
-        }
-
-        template< class S, class Alloc >
-        friend bool operator<( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
-        {
-            size_type lhs_size = lhs._c_idx;
-            size_type rhs_size = rhs._c_idx;
-            size_type idx_lhs = 0;
-            size_type idx_rhs = 0;
-
-            while (idx_lhs < lhs_size && idx_rhs < rhs_size)
-            {
-                if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
-                    return lhs._array[idx_lhs] < rhs._array[idx_rhs];
-                idx_lhs++;
-                idx_rhs++;
-            }
-            return lhs_size < rhs_size;
-        }
-
-        template< class S, class Alloc >
-        friend bool operator<=( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
-        {
-            size_type lhs_size = lhs._c_idx;
-            size_type rhs_size = rhs._c_idx;
-            size_type idx_lhs = 0;
-            size_type idx_rhs = 0;
-
-            while (idx_lhs < lhs_size && idx_rhs < rhs_size)
-            {
-                if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
-                    return lhs._array[idx_lhs] < rhs._array[idx_rhs];
-                idx_lhs++;
-                idx_rhs++;
-            }
-            return lhs_size <= rhs_size;
-        }
-
-        template< class S, class Alloc >
-        friend bool operator>( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
-        {
-            size_type lhs_size = lhs._c_idx;
-            size_type rhs_size = rhs._c_idx;
-            size_type idx_lhs = 0;
-            size_type idx_rhs = 0;
-
-            while (idx_lhs < lhs_size && idx_rhs < rhs_size)
-            {
-                if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
-                    return lhs._array[idx_lhs] > rhs._array[idx_rhs];
-                idx_lhs++;
-                idx_rhs++;
-            }
-            return lhs_size > rhs_size;
-        }
-
-        template< class S, class Alloc >
-        friend bool operator>=( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
-        {
-            size_type lhs_size = lhs._c_idx;
-            size_type rhs_size = rhs._c_idx;
-            size_type idx_lhs = 0;
-            size_type idx_rhs = 0;
-
-            while (idx_lhs < lhs_size && idx_rhs < rhs_size)
-            {
-                if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
-                    return lhs._array[idx_lhs] > rhs._array[idx_rhs];
-                idx_lhs++;
-                idx_rhs++;
-            }
-            return lhs_size >= rhs_size;
-        }
     };
+
+    template< class S, class Alloc >
+    bool operator==( const vector<S, Alloc>& lhs, const vector<S, Alloc>& rhs )
+    {
+        if (lhs._c_idx != rhs._c_idx)
+            return false;
+        for(int i = 0; i < lhs._c_idx; i++)
+        {
+            if (lhs._array[i] != rhs._array[i])
+                return false;
+        }
+        return true;
+    }
+
+    template< class S, class Alloc >
+    bool operator!=( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
+    {
+        return !operator==(lhs, rhs);
+    }
+
+    template< class S, class Alloc >
+    bool operator<( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
+    {
+        int lhs_size = lhs._c_idx;
+        int rhs_size = rhs._c_idx;
+        int idx_lhs = 0;
+        int idx_rhs = 0;
+
+        while (idx_lhs < lhs_size && idx_rhs < rhs_size)
+        {
+            if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
+                return lhs._array[idx_lhs] < rhs._array[idx_rhs];
+            idx_lhs++;
+            idx_rhs++;
+        }
+        return lhs_size < rhs_size;
+    }
+
+    template< class S, class Alloc >
+    bool operator<=( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
+    {
+        int lhs_size = lhs._c_idx;
+        int rhs_size = rhs._c_idx;
+        int idx_lhs = 0;
+        int idx_rhs = 0;
+
+        while (idx_lhs < lhs_size && idx_rhs < rhs_size)
+        {
+            if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
+                return lhs._array[idx_lhs] < rhs._array[idx_rhs];
+            idx_lhs++;
+            idx_rhs++;
+        }
+        return lhs_size <= rhs_size;
+    }
+
+    template< class S, class Alloc >
+    bool operator>( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
+    {
+        int lhs_size = lhs._c_idx;
+        int rhs_size = rhs._c_idx;
+        int idx_lhs = 0;
+        int idx_rhs = 0;
+
+        while (idx_lhs < lhs_size && idx_rhs < rhs_size)
+        {
+            if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
+                return lhs._array[idx_lhs] > rhs._array[idx_rhs];
+            idx_lhs++;
+            idx_rhs++;
+        }
+        return lhs_size > rhs_size;
+    }
+
+    template< class S, class Alloc >
+    bool operator>=( const vector<S,Alloc>& lhs, const vector<S,Alloc>& rhs )
+    {
+        int lhs_size = lhs._c_idx;
+        int rhs_size = rhs._c_idx;
+        int idx_lhs = 0;
+        int idx_rhs = 0;
+
+        while (idx_lhs < lhs_size && idx_rhs < rhs_size)
+        {
+            if (lhs._array[idx_lhs] != rhs._array[idx_rhs])
+                return lhs._array[idx_lhs] > rhs._array[idx_rhs];
+            idx_lhs++;
+            idx_rhs++;
+        }
+        return lhs_size >= rhs_size;
+    }
 
     template< class T, class Alloc >
     void swap( vector<T,Alloc>& lhs, vector<T,Alloc>& rhs )

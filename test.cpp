@@ -8,8 +8,8 @@
 #include <stack>
 #include <map>
 
-#define FT_CONTAINER
-// #define STD_CONTAINER
+// #define FT_CONTAINER
+#define STD_CONTAINER
 
 #ifdef FT_CONTAINER
 
@@ -46,7 +46,6 @@ typedef std::vector<int>::reverse_iterator reverseIterator;
 
 int main()
 {
-
 	std::cout << "\n======================= vector test ===========================" << "\n\n";
 	vector vec1;
 	std::cout << "     [insert vector test]    " << "\n";
