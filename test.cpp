@@ -24,7 +24,6 @@ typedef ft::vector<int> vector;
 typedef ft::vector<int>::iterator iteratorVector;
 typedef ft::vector<int>::reverse_iterator reverseIterator;
 
-
 #endif
 
 #ifdef STD_CONTAINER
@@ -42,8 +41,6 @@ typedef std::vector<int>::reverse_iterator reverseIterator;
 
 #endif
 
-
-
 int main()
 {
 	std::cout << "\n======================= vector test ===========================" << "\n\n";
@@ -55,9 +52,13 @@ int main()
 	vec1.push_back(2);
 	vec1.push_back(3);
 
-	std::cout << "print vec1 with iterator" << "\n";
 	iteratorVector vItStart = vec1.begin();
+	vItStart++;
+	vec1.insert(vItStart, 4);
+
+	vItStart = vec1.begin();
 	iteratorVector vItEnd = vec1.end();
+	std::cout << "print vec1 with iterator" << "\n";
 	while (vItStart != vItEnd)
 	{
 		std::cout << *vItStart << " ";
@@ -77,6 +78,131 @@ int main()
 	}
 	std::cout << "\n";
 
+	std::cout << "\n[assign test]" << "\n";
+	vec1.assign((size_t)5, 10);
+	std::cout << "print vec1 with iterator" << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	std::cout << "\n[front test]" << "\n";
+	std::cout << "vec2 front = " << vec2.front() << "\n";
+
+	std::cout << "\n[back test]" << "\n";
+	std::cout << "vec2 back = " << vec2.back() << "\n";
+
+	std::cout << "\n[empty test]" << "\n";
+	std::cout << "vec1 is empty = " << vec1.empty() << "\n";
+	std::cout << "vec2 is empty = " << vec2.empty() << "\n";
+
+	std::cout << "\n[size test]" << "\n";
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	std::cout << "vec2 size = " << vec2.size() << "\n";
+
+	std::cout << "\n[capacity reserve test]" << "\n";
+	vec1.reserve(100);
+	std::cout << "vec1 capacity = " << vec1.capacity() << "\n";
+
+	std::cout << "\n[resize test]" << "\n";
+	vec1.resize(10);
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+
+	std::cout << "\n[clear test]" << "\n";
+	vec1.clear();
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+
+	std::cout << "\n[erase test]" << "\n";
+	vec1.push_back(1);
+	vec1.push_back(2);
+	vec1.push_back(3);
+	vec1.push_back(4);
+	vec1.push_back(5);
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	vItStart++;
+	vItStart++;
+	vec1.erase(vItStart, vItEnd);
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	std::cout << "\n[pop_back test]" << "\n";
+	vec1.pop_back();
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	std::cout << "\n[swap test]" << "\n";
+	vec1.swap(vec2);
+	std::cout << "vec1 size = " << vec1.size() << "\n";
+	vItStart = vec1.begin();
+	vItEnd = vec1.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	std::cout << "vec2 size = " << vec2.size() << "\n";
+	vItStart = vec2.begin();
+	vItEnd = vec2.end();
+	while (vItStart != vItEnd)
+	{
+		std::cout << *vItStart << " ";
+		vItStart++;
+	}
+	std::cout << "\n";
+
+	std::cout << "\n[operator[] test]" << "\n";
+	std::cout << "vec1[0] = " << vec1[0] << "\n";
+	std::cout << "vec1[1] = " << vec1[1] << "\n";
+	std::cout << "vec1[2] = " << vec1[2] << "\n";
+	std::cout << "vec1[3] = " << vec1[3] << "\n";
+	std::cout << "vec1[4] = " << vec1[4] << "\n";
+
+
 	std::cout << "\n     [=operator test (vec3 = vec2)]    " << "\n";
 	vector vec3 = vec2;
 	std::cout << "print vec3 with iterator" << "\n";
@@ -90,7 +216,6 @@ int main()
 	std::cout << "\n";
 
 	
-
 
 	std::cout << "\n======================= map test ===========================" << "\n\n";
 	map map1;
@@ -176,6 +301,9 @@ int main()
 		it++;
 	}
 
+	std::cout << "\n[max_size test]" << "\n";
+	std::cout << "max_size = " << map2.max_size() << "\n";
+
 	std::cout << "\n[swap test]" << "\n";
 	map map3;
 	map3.insert(MAKE_PAIR(5, 5.1));
@@ -244,5 +372,7 @@ int main()
 	std::cout << "\n[operator>= test (map4 >= map3)]\n";
 	std::cout << "map4 >= map3 ? " << (map4 >= map3) << "\n";
 
+	std::cout << "[max_size test]\n";
+	std::cout << "map1 max_size = " << map1.max_size() << "\n";
 	return 0;
 }

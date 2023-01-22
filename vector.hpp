@@ -162,7 +162,7 @@ namespace ft
             return *this;
         }
         
-        void assign( size_type count, const T& value )
+        void assign( size_type count, const_reference value )
         {
             if (_array)
             {
@@ -171,7 +171,7 @@ namespace ft
             }
             this->_c_idx = 0;
             this->_capacity = (int) count;
-            this->array = _alloc.allocate(this->_capacity);
+            this->_array = _alloc.allocate(this->_capacity);
             _fill_array(count, value);
         }
 
@@ -310,7 +310,6 @@ namespace ft
             return std::min<std::size_t>(_alloc.max_size(),  \
                     std::numeric_limits<difference_type>::max());
         }
-
 
         void reserve( size_type new_cap )
         {
@@ -457,32 +456,28 @@ namespace ft
 
         void resize( size_type count )
         {
-            if (_capacity >= count)
-                return;
-            T *newArr = _alloc.allocate(count);
-            for(int i = 0; i < _c_idx; i++)
-                newArr[i] = _array[i];
-            _alloc.deallocate(_array, _capacity);
-            _array = newArr;
-            for(int i = _c_idx; i < (int) count; i++)
-                _alloc.construct(_array + i, 0);
-            _c_idx = count;
-            _capacity = count;
+            if ((size_type)_c_idx > count)
+                _c_idx = count;
+            else
+            {
+                _realloc_array(count);
+                for(int i = _c_idx; i < (int)count; i++)
+                    _alloc.construct(_array + i, 0);
+                _c_idx = count;
+            }
         }
 
         void resize( size_type count, const_reference value )
         {
-            if (_capacity >= count)
-                return;
-            T *newArr = _alloc.allocate(count);
-            for(int i = 0; i < _c_idx; i++)
-                newArr[i] = _array[i];
-            _alloc.deallocate(_array, _capacity);
-            _array = newArr;
-            for(int i = _c_idx; i < (int) count; i++)
-                _alloc.construct(_array + i, value);
-            _c_idx = count;
-            _capacity = count;
+            if ((size_type)_c_idx > count)
+                _c_idx = count;
+            else
+            {
+                _realloc_array(count);
+                for(int i = _c_idx; i < (int)count; i++)
+                    _alloc.construct(_array + i, value);
+                _c_idx = count;
+            }
         }
 
         void swap( vector& other )

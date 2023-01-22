@@ -395,7 +395,7 @@ size_type size() const
 
 size_type max_size() const
 {
-    return std::min<std::size_t>(_alloc.max_size(),  \
+    return std::min<std::size_t>(std::numeric_limits<size_type>::max() / sizeof(value_type), \
                     std::numeric_limits<difference_type>::max());
 }
 
