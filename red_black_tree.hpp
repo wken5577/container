@@ -45,8 +45,15 @@ class RBTree
     };
 
 public:
-   typedef T        *dataType;
-   typedef TNode    *node;
+   typedef T *                                                  dataType;
+   typedef TNode *                                              node;
+   typedef VAL *                                                pointer;
+   typedef std::size_t                                          size_type;
+   typedef std::ptrdiff_t                                       difference_type;
+   typedef typename Allocator::template rebind<TNode>::other    node_allocator;
+   typedef std::allocator_traits<node_allocator>                node_traits;
+   typedef Allocator                                            allocator_type;
+   typedef typename allocator_type::value_type                  value_type;
 
 private:
     TNode 	        *head;
@@ -641,6 +648,12 @@ public:
     ~RBTree()
     {
         deleteAllData();
+    }
+
+    size_type max_size() const
+    {
+       return std::min<size_t>(node_traits::max_size(node_allocator()),
+                std::numeric_limits<difference_type >::max());
     }
 
     void deleteAllData()

@@ -1,5 +1,5 @@
-#include "vector.hpp"
 #include "stack.hpp"
+#include "vector.hpp"
 #include "map.hpp"
 #include "pair.hpp"
 
@@ -8,8 +8,8 @@
 #include <stack>
 #include <map>
 
-// #define FT_CONTAINER
-#define STD_CONTAINER
+#define FT_CONTAINER
+// #define STD_CONTAINER
 
 #ifdef FT_CONTAINER
 
@@ -23,6 +23,9 @@ typedef ft::map<int, float>::reverse_iterator reverse_iterator;
 typedef ft::vector<int> vector;
 typedef ft::vector<int>::iterator iteratorVector;
 typedef ft::vector<int>::reverse_iterator reverseIterator;
+
+typedef ft::stack<int> stack;
+
 
 #endif
 
@@ -38,6 +41,8 @@ typedef std::map<int, float>::reverse_iterator reverse_iterator;
 typedef std::vector<int> vector;
 typedef std::vector<int>::iterator iteratorVector;
 typedef std::vector<int>::reverse_iterator reverseIterator;
+
+typedef std::stack<int> stack;
 
 #endif
 
@@ -77,6 +82,27 @@ int main()
 		vRitStart++;
 	}
 	std::cout << "\n";
+
+	std::cout << "\n[reverse iterator operator test]" << "\n";
+	vRitStart = vec2.rbegin();
+	vRitEnd = vec2.rend();
+	std::cout << "reverse iterator1 = " << *vRitStart << "\n";
+	std::cout << "reverse iterator2 = " << *vRitEnd << "\n";
+	std::cout << "iterator1 < iterator2 : " << (vRitStart < vRitEnd) << "\n";
+
+	std::cout << "reverse iterator1 = " << *vRitStart << "\n";
+	std::cout << "reverse iterator2 = " << *vRitEnd << "\n";
+	std::cout << "iterator1 > iterator2 : " << (vRitStart > vRitEnd) << "\n";
+
+	std::cout << "reverse iterator1 = " << *vRitStart << "\n";
+	std::cout << "reverse iterator2 = " << *vRitEnd << "\n";
+	std::cout << "iterator1 <= iterator2 : " << (vRitStart <= vRitEnd) << "\n";
+
+	std::cout << "reverse iterator1 = " << *vRitStart << "\n";
+	std::cout << "reverse iterator2 = " << *vRitEnd << "\n";
+	std::cout << "iterator1 >= iterator2 : " << (vRitStart >= vRitEnd) << "\n";
+
+
 
 	std::cout << "\n[assign test]" << "\n";
 	vec1.assign((size_t)5, 10);
@@ -374,5 +400,41 @@ int main()
 
 	std::cout << "[max_size test]\n";
 	std::cout << "map1 max_size = " << map1.max_size() << "\n";
+
+
+	std::cout << "\n[stack test]" << "\n";
+	stack s;
+
+	s.push(1);
+	s.push(2);
+	s.push(3);
+	s.push(4);
+
+	stack s2(s);
+
+	std::cout << "stack size = " << s.size() << "\n";
+	std::cout << "stack top = " << s.top() << "\n";
+	s.pop();
+	std::cout << "stack top = " << s.top() << "\n";
+	s.pop();
+	std::cout << "stack top = " << s.top() << "\n";
+	s.pop();
+
+	std::cout << "\n[empty test]" << "\n";
+	std::cout << "stack is empty? " << s.empty() << "\n";
+
+
+	std::cout << "\n[stack s2]" << "\n";
+	std::cout << "stack size = " << s2.size() << "\n";
+	std::cout << "stack top = " << s2.top() << "\n";
+	s2.pop();
+	std::cout << "stack top = " << s2.top() << "\n";
+	s2.pop();
+	std::cout << "stack top = " << s2.top() << "\n";
+	s2.pop();
+
+	std::cout << "\n[empty test]" << "\n";
+	std::cout << "stack is empty? " << s2.empty() << "\n";
+
 	return 0;
 }

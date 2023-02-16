@@ -179,19 +179,6 @@ template< class Iter >
         template< class Iterator1, class Iterator2 >
         friend bool operator!=( const reverse_iterator_map<Iterator1>& lhs,
                     const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() != rhs.base();}
-        template< class Iterator1, class Iterator2 >
-        friend bool operator<( const reverse_iterator_map<Iterator1>& lhs,
-                const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() < rhs.base();}
-        template< class Iterator1, class Iterator2 >
-        friend bool operator<=( const reverse_iterator_map<Iterator1>& lhs,
-                    const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() <= rhs.base();}
-        template< class Iterator1, class Iterator2 >
-        friend bool operator>( const reverse_iterator_map<Iterator1>& lhs,
-                const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() > rhs.base();}
-        template< class Iterator1, class Iterator2 >
-        friend bool operator>=( const reverse_iterator_map<Iterator1>& lhs,
-                    const reverse_iterator_map<Iterator2>& rhs ) {return lhs.base() >= rhs.base();}
-    
     };
 
 public:
@@ -395,8 +382,7 @@ size_type size() const
 
 size_type max_size() const
 {
-    return std::min<std::size_t>(std::numeric_limits<size_type>::max() / sizeof(value_type), \
-                    std::numeric_limits<difference_type>::max());
+    return _tree.max_size();
 }
 
 void clear()

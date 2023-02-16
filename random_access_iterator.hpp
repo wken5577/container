@@ -38,13 +38,9 @@ namespace ft
         }
 
         bool operator==(const random_access_iterator& other) const { 
-            if (_iterator == nullptr || other._iterator == nullptr)
-                return _iterator == other._iterator;
             return _iterator == other._iterator;
         }
         bool operator!=(const random_access_iterator& other) const { 
-            if (_iterator == nullptr || other._iterator == nullptr)
-                return _iterator == other._iterator;
             return _iterator != other._iterator; 
         }
         reference operator*() const {T * __tmp = _iterator; return *__tmp;}

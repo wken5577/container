@@ -237,11 +237,15 @@ namespace ft
 
         reference back()
         {
+            if (_c_idx == 0)
+                throw std::out_of_range("index out of range error");
             return this->_array[_c_idx -1];
         }
 
         const_reference back() const
         {
+             if (_c_idx == 0)
+                throw std::out_of_range("index out of range error");
             return this->_array[_c_idx -1];
         }
 
@@ -321,6 +325,8 @@ namespace ft
             }
             for(int i = 0; i < _c_idx; i++)
                 _alloc.construct(newArr + i, _array[i]);
+            for(int i = 0; i < _c_idx; i++)
+                _alloc.destroy(_array + i);
             _alloc.deallocate(_array, _capacity);
             _capacity = new_cap;
             _array = newArr;
